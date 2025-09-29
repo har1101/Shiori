@@ -43,14 +43,14 @@ SLACK_SEARCH_SYSTEM_PROMPT = """
 
 <出力仕様(JSONL)>
 - 各行が1レコードの JSON。フィールドは以下:
-  - "user_id": 文字列（例 "U123ABC"）
-  - "user_name": 文字列（取得できない場合は null）
-  - "user_email": 文字列 or null
+  - "slack_user_id": 文字列（例 "U123ABC"）
+  - "slack_user_name": 文字列（取得できない場合は null）
+  - "slack_user_email": 文字列 or null
   - "url": 文字列（抽出したアウトプットURL）
   - "slack_upload_time": 文字列（"YYYYMMDD"）
   - "slack_channel": 文字列（常に "{SLACK_CHANNEL}" を入れる）
 - 例:
-  {{"user_id":"U123ABC","user_name":"alice","user_email":null,"url":"https://qiita.com/...","slack_upload_time":"20250916","slack_channel":"{SLACK_CHANNEL}"}}
+  {{"slack_user_id":"U123ABC","slack_user_name":"alice","slack_user_email":null,"url":"https://qiita.com/...","slack_upload_time":"20250916","slack_channel":"{SLACK_CHANNEL}"}}
 
 <ツール使用の明示指示>
 - 履歴取得: slack___conversationsHistory(channel="{SLACK_CHANNEL}", limit を明示指定し、cursor は**使用しない**)
@@ -105,21 +105,8 @@ class SlackAgentFactory(GatewayIdentityConfig):
         # 2) Slack系ツールに絞る（無ければ全部使う）
         slack_tools = _filter_tools_by_keyword(tools, "slack") or tools
 
-        # 2-1) さらに使用可能なSlackツールを指定名で絞り込み
-        allowed_slack_tool_names = {
-            "slack___conversationsHistory",
-            "slack___usersList",
-        }
-        try:
-            slack_selected_tools = [
-                t for t in slack_tools if _get_tool_name(t) in allowed_slack_tool_names
-            ]
-        except Exception:
-            # 取得に失敗した場合は名前文字列比較を避けてそのまま使用
-            raise ValueError("Slackツールの列挙に失敗しました。")
-
         # 2-2) 最終的なエージェント使用可能ツール
-        agent_tools = slack_selected_tools # + [interpreter.code_interpreter]
+        agent_tools = slack_tools # + [interpreter.code_interpreter]
 
         # 3) Agent生成
         agent = Agent(
