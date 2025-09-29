@@ -78,7 +78,16 @@ ShioriはAmazon Bedrock AgentCoreとStrands Agents SDKを活用して、以下�
    agentcore configure
    ```
 
-5. **環境変数を指定してAgentCoreを起動**
+5. **Dockerfileの修正**
+
+   `agentcore configure`実行後、`Dockerfile`を編集してOpenTelemetry計装を無効化します：
+
+   ```diff
+   - CMD ["opentelemetry-instrument", "python", "-m", "shiori_agent_graph"]
+   + CMD ["python", "-m", "shiori_agent_graph"]
+   ```
+
+6. **環境変数を指定してAgentCoreを起動**
 
    ```bash
    agentcore launch \
@@ -94,7 +103,7 @@ ShioriはAmazon Bedrock AgentCoreとStrands Agents SDKを活用して、以下�
      --env AURORA_DSQL_DATABASE_USER=<DB User Name>
    ```
 
-6. **フロントエンドアプリケーションの起動**
+7. **フロントエンドアプリケーションの起動**
 
    ```bash
    # プロジェクトルートから

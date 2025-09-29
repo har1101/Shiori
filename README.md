@@ -85,7 +85,16 @@ Shiori leverages Amazon Bedrock AgentCore and the Strands Agents SDK to create a
    agentcore configure
    ```
 
-5. **Launch AgentCore with environment variables**
+5. **Modify Dockerfile**
+
+   After running `agentcore configure`, edit the `Dockerfile` to disable OpenTelemetry instrumentation:
+
+   ```diff
+   - CMD ["opentelemetry-instrument", "python", "-m", "shiori_agent_graph"]
+   + CMD ["python", "-m", "shiori_agent_graph"]
+   ```
+
+6. **Launch AgentCore with environment variables**
 
    ```bash
    agentcore launch \
@@ -101,7 +110,7 @@ Shiori leverages Amazon Bedrock AgentCore and the Strands Agents SDK to create a
      --env AURORA_DSQL_DATABASE_USER=<DB User Name>
    ```
 
-6. **Start the frontend application**
+7. **Start the frontend application**
 
    ```bash
    # From project root
