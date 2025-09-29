@@ -11,6 +11,12 @@ Shiori leverages Amazon Bedrock AgentCore and the Strands Agents SDK to create a
 - Storing structured data in Amazon Aurora DSQL
 - Providing an intuitive Streamlit-based web interface
 
+## Images
+
+![alt text](image-1.png)
+![alt text](image-2.png)
+![alt text](image-3.png)
+
 ## 🏗️ Architecture
 
 ### Multi-Agent System
