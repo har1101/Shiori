@@ -14,11 +14,13 @@ ShioriはAmazon Bedrock AgentCoreとStrands Agents SDKを活用して、以下�
 ## 🏗️ システム構成
 
 ### マルチエージェントシステム
+
 - **Slackエージェント**: 指定されたSlackチャンネルからメッセージとURLを取得
 - **Web コンテンツエージェント**: Firecrawlを使用してコンテンツの抽出・分析
 - **AWSレベル評価エージェント**: 技術的複雑度とAWSサービス使用状況の評価
 
 ### 主要コンポーネント
+
 - **フロントエンド**: Streamlitベースのチャットインターフェース（`frontend_app.py`）
 - **エージェントグラフ**: マルチエージェント オーケストレーション（`agent_graph/shiori_agent_graph.py`）
 - **データアクセス層**: Aurora DSQL連携（`agent_graph/data_access/dsql_client.py`）
@@ -29,25 +31,35 @@ ShioriはAmazon Bedrock AgentCoreとStrands Agents SDKを活用して、以下�
 ### 前提条件
 
 1. **uvパッケージマネージャーのインストール**
+
    ```bash
    # uvがインストールされていない場合
    curl -LsSf https://astral.sh/uv/install.sh | sh
    ```
 
 2. **Amazon Aurora DSQLの設定**
-   - AWSアカウントでAurora DSQLクラスターを作成
+   - AWSアカウントでAurora DSQLクラスターとIAMロール（クラスターアクセス用）を作成
    - セットアップガイドを参照: https://qiita.com/har1101/items/7dd1a6d803e48e3e0525
    - `sql/create_tables_output_history.sql`からSQLスキーマを実行
+
+3. **Bedrock AgentCore GatewayとIdentityの設定**
+   - AgentCore Gateway（Slack MCP用）を作成
+   - AgentCore Identity（AgentCore GatewayとLangfuse用）を作成
+   - セットアップガイドを参照:
+     - https://qiita.com/har1101/items/aae967fa157b01e414a9
+     - https://qiita.com/har1101/items/73165084bc6ec5c64290
 
 ### インストール
 
 1. **リポジトリのクローン**
+
    ```bash
    git clone https://github.com/har1101/Shiori.git
    cd Shiori
    ```
 
 2. **Python仮想環境のセットアップ**
+
    ```bash
    uv venv
    cd agent_graph
@@ -60,14 +72,16 @@ ShioriはAmazon Bedrock AgentCoreとStrands Agents SDKを活用して、以下�
    ```
 
 4. **AgentCoreの設定**
+
    ```bash
    cd agent_graph
    agentcore configure
    ```
 
 5. **環境変数を指定してAgentCoreを起動**
+
    ```bash
-   agentcore launch --env LANGFUSE_SECRET_KEY_SECRET_ID=langfuse-secret-key \
+   agentcore launch \
      --env LANGFUSE_PUBLIC_KEY_SECRET_ID=langfuse-public-key
      --env LANGFUSE_SECRET_KEY_SECRET_ID=langfuse-secret-key \
      --env DISABLE_ADOT_OBSERVABILITY=true \
@@ -81,6 +95,7 @@ ShioriはAmazon Bedrock AgentCoreとStrands Agents SDKを活用して、以下�
    ```
 
 6. **フロントエンドアプリケーションの起動**
+
    ```bash
    # プロジェクトルートから
    streamlit run frontend_app.py
@@ -98,7 +113,8 @@ ShioriはAmazon Bedrock AgentCoreとStrands Agents SDKを活用して、以下�
 
 ### データベースセットアップ
 
-Aurora DSQLでSQLスキーマを実行：
+Aurora DSQLでSQLスキーマを実行
+
 ```bash
 psql -h your-dsql-endpoint -U admin -d postgres -f sql/create_tables_output_history.sql
 ```
@@ -106,21 +122,25 @@ psql -h your-dsql-endpoint -U admin -d postgres -f sql/create_tables_output_hist
 ## 📊 主な機能
 
 ### インテリジェントなコンテンツ収集
+
 - 指定されたSlackチャンネルの自動監視
 - 技術的コンテンツを含むメッセージからのURL抽出
 - 関連する技術的アウトプットのフィルタリング（ブログ記事、プレゼンテーション、ドキュメントなど）
 
 ### AIによる分析
+
 - 高度な言語モデルを使用したコンテンツ要約
 - AWSサービス使用状況評価と技術レベル判定
 - Webコンテンツからの構造化データ抽出
 
 ### Streamlit Webインターフェース
+
 - エージェントシステムとのリアルタイムチャットインターフェース
 - 視覚的な進捗追跡と実行統計
 - 展開可能な詳細を含む構造化レスポンス形式
 
 ### データ管理
+
 - Amazon Aurora DSQLでの永続的ストレージ
 - 包括的な活動追跡と月次レポート
 - 処理履歴とエラーログ
@@ -136,7 +156,7 @@ psql -h your-dsql-endpoint -U admin -d postgres -f sql/create_tables_output_hist
 
 ## 📁 プロジェクト構造
 
-```
+```text
 Shiori/
 ├── agent_graph/                 # コアエージェントシステム
 │   ├── agents/                  # エージェント実装
@@ -160,6 +180,7 @@ Shiori/
 ### 基本的な使用フロー
 
 1. **Streamlitアプリケーションの起動**
+
    ```bash
    streamlit run frontend_app.py
    ```

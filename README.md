@@ -5,6 +5,7 @@
 ## 🔖 Project Overview
 
 Shiori leverages Amazon Bedrock AgentCore and the Strands Agents SDK to create a seamless workflow for:
+
 - Collecting technical content URLs from designated Slack channels
 - Extracting and summarizing content using AI agents
 - Storing structured data in Amazon Aurora DSQL
@@ -13,11 +14,13 @@ Shiori leverages Amazon Bedrock AgentCore and the Strands Agents SDK to create a
 ## 🏗️ Architecture
 
 ### Multi-Agent System
+
 - **Slack Agent**: Retrieves messages and URLs from specified Slack channels
 - **Web Content Agent**: Extracts and analyzes content using Firecrawl
 - **AWS Level Assessment Agent**: Evaluates technical complexity and AWS service usage
 
 ### Core Components
+
 - **Frontend**: Streamlit-based chat interface (`frontend_app.py`)
 - **Agent Graph**: Multi-agent orchestration (`agent_graph/shiori_agent_graph.py`)
 - **Data Access Layer**: Aurora DSQL integration (`agent_graph/data_access/dsql_client.py`)
@@ -28,6 +31,7 @@ Shiori leverages Amazon Bedrock AgentCore and the Strands Agents SDK to create a
 ### Prerequisites
 
 1. **Install uv package manager**
+
    ```bash
    # Install uv if not already installed
    curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -41,19 +45,21 @@ Shiori leverages Amazon Bedrock AgentCore and the Strands Agents SDK to create a
 3. **Set up Bedrock AgentCore Gateway & Identity**
    - Create an AgentCore Gateway(for Slack MCP)
    - Create some AgentCore Identity(for AgentCore Gateway & Langfuse)
-   - Follow the setup guide: 
+   - Follow the setup guide:
      - https://qiita.com/har1101/items/aae967fa157b01e414a9
      - https://qiita.com/har1101/items/73165084bc6ec5c64290
 
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/har1101/Shiori.git
    cd Shiori
    ```
 
 2. **Set up Python virtual environment**
+
    ```bash
    uv venv
    cd agent_graph
@@ -61,17 +67,20 @@ Shiori leverages Amazon Bedrock AgentCore and the Strands Agents SDK to create a
    ```
 
 3. **Install additional dependencies**
+
    ```bash
    uv pip install bedrock-agentcore-starter-toolkit streamlit
    ```
 
 4. **Configure AgentCore**
+
    ```bash
    cd agent_graph
    agentcore configure
    ```
 
 5. **Launch AgentCore with environment variables**
+
    ```bash
    agentcore launch \
      --env LANGFUSE_PUBLIC_KEY_SECRET_ID=langfuse-public-key
@@ -87,6 +96,7 @@ Shiori leverages Amazon Bedrock AgentCore and the Strands Agents SDK to create a
    ```
 
 6. **Start the frontend application**
+
    ```bash
    # From project root
    streamlit run frontend_app.py
@@ -105,6 +115,7 @@ Shiori leverages Amazon Bedrock AgentCore and the Strands Agents SDK to create a
 ### Database Setup
 
 Execute the SQL schema in Aurora DSQL:
+
 ```bash
 psql -h your-dsql-endpoint -U admin -d postgres -f sql/create_tables_output_history.sql
 ```
@@ -112,21 +123,25 @@ psql -h your-dsql-endpoint -U admin -d postgres -f sql/create_tables_output_hist
 ## 📊 Features
 
 ### Intelligent Content Collection
+
 - Automatically monitors specified Slack channels
 - Extracts URLs from messages containing technical content
 - Filters relevant technical outputs (blog posts, presentations, documentation)
 
 ### AI-Powered Analysis
+
 - Content summarization using advanced language models
 - AWS service usage assessment and technical level evaluation
 - Structured data extraction from web content
 
 ### Streamlit Web Interface
+
 - Real-time chat interface for interacting with the agent system
 - Visual progress tracking and execution statistics
 - Structured response formatting with expandable details
 
 ### Data Management
+
 - Persistent storage in Amazon Aurora DSQL
 - Comprehensive activity tracking and monthly reporting
 - Processing history and error logging
@@ -142,7 +157,7 @@ psql -h your-dsql-endpoint -U admin -d postgres -f sql/create_tables_output_hist
 
 ## 📁 Project Structure
 
-```
+```text
 Shiori/
 ├── agent_graph/                 # Core agent system
 │   ├── agents/                  # Agent implementations
