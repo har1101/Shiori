@@ -1,0 +1,49 @@
+# Jr.Champions活動可視化システム - Python依存関係
+
+# Strands Agents SDK (Bedrock AgentCoreで使用)
+strands-agents>=1.7.1
+strands-agents-tools>=0.1.0
+
+# Bedrock AgentCore
+bedrock-agentcore>=0.1.0
+
+# langfuse
+langfuse
+
+# AWS SDK
+boto3>=1.34.0
+
+# Database
+psycopg2-binary>=2.9.0
+
+# Data Validation
+pydantic>=2.0.0
+email-validator>=2.0
+
+# Configuration
+pyyaml>=6.0
+
+# Date/Time utilities
+python-dateutil>=2.8.0
+
+# HTTP Requests (for connpass API)
+requests>=2.31.0
+
+# MCP (Model Context Protocol)
+mcp>=0.1.0
+
+# HTTP Client (MCP通信用)
+httpx>=0.25.0
+
+# Testing
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-mock>=3.11.0
+
+# Code Quality
+black>=23.3.0
+flake8>=6.0.0
+mypy>=1.3.0
+
+# Logging
+python-json-logger>=2.0.0
