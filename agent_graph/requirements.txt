@@ -31,6 +31,7 @@ requests>=2.31.0
 
 # MCP (Model Context Protocol)
 mcp>=0.1.0
+awslabs.aurora-dsql-mcp-server>=0.0.5
 
 # HTTP Client (MCP通信用)
 httpx>=0.25.0

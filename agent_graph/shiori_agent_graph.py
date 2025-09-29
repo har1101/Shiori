@@ -13,7 +13,7 @@ import logging, os
 import json
 import boto3
 import base64
-from typing import Any, Dict
+from typing import Any, Dict, List
 from strands import Agent
 from strands.multiagent import GraphBuilder
 from bedrock_agentcore.runtime import BedrockAgentCoreApp
@@ -22,9 +22,9 @@ from boto3.session import Session
 
 
 # ツールのインポート
-from agents.nodes.data_node import PutDataTool, SendResultTool
 from agents.config.gateway_identity_config import GatewayIdentityConfig, parse_prompt_from_payload, always_false_condition, extract_message_content, detect_mcp_usage
-from agents.config.mcp_config import MCPConfig
+from agents.config.remote_mcp_config import RemoteMCPConfig
+from agents.config.local_mcp_config import LocalMCPConfig
 from agents.slack_agent_factory import SlackAgentFactory
 from agents.web_agent_factory import FirecrawlAgentFactory
 from langfuse import get_client
@@ -112,7 +112,7 @@ async def invoke_agent_graph(payload: Dict[str, Any]):
         gateway_mcp = await gateway_config.create_mcp_client_and_tools()
 
         # Firecrawl MCPのセッション(SSE)を開く
-        sse_config = MCPConfig(
+        sse_config = RemoteMCPConfig(
             provider_name="firecrawl_api_key",
             base_url="https://mcp.firecrawl.dev",
             http_path_template=None,
@@ -120,20 +120,24 @@ async def invoke_agent_graph(payload: Dict[str, Any]):
         )
         sse_mcp = await sse_config.build_client()
 
+        # Aurora DSQLのセッションを開く
+        dsql_config = LocalMCPConfig()
+        dsql_mcp = await dsql_config.build_client()
+
         # MCPのwithコンテキスト内でGraph全体を実行
         logger.info("📦 MCPコンテキストを開始（セッション維持）...")
         # AWS Knowledge MCPを用いる場合は、withにstreamable_http_mcpを追加する
-        with gateway_mcp, sse_mcp:
+        with gateway_mcp, sse_mcp, dsql_mcp:
             logger.info("✅ MCPコンテキストに入りました - セッションアクティブ")
 
             slack_agent = SlackAgentFactory(
-                model_id=os.environ.get("SLACK_AGENT_MODEL_ID", "us.anthropic.claude-sonnet-4-20250514-v1:0"),
-                slack_channel=os.environ.get("SLACK_CHANNEL", "C0993DE00EP")
+                model_id=os.environ.get("SLACK_AGENT_MODEL_ID", "us.anthropic.claude-sonnet-4-5-20250929-v1:0"),
+                slack_channel=os.environ.get("SLACK_CHANNEL", "")
             ).build(gateway_mcp)
 
             firecrawl_agent = FirecrawlAgentFactory(
-                model_id=os.environ.get("FIRECRAWL_AGENT_MODEL_ID", "us.anthropic.claude-sonnet-4-20250514-v1:0"),
-            ).build(sse_mcp)
+                model_id=os.environ.get("FIRECRAWL_AGENT_MODEL_ID", "us.anthropic.claude-sonnet-4-5-20250929-v1:0"),
+            ).build(sse_mcp, dsql_mcp)
 
             block_agent = Agent()
 

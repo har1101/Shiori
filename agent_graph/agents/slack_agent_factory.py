@@ -74,8 +74,8 @@ class SlackAgentFactory(GatewayIdentityConfig):
 
     def __init__(
             self,
-            model_id: str | None = None,
-            slack_channel: str | None = None
+            model_id: str,
+            slack_channel: str
         ):
         super().__init__()
         self.model_id = model_id
@@ -88,6 +88,8 @@ class SlackAgentFactory(GatewayIdentityConfig):
         
         self.slack_channel = slack_channel
         if not self.slack_channel:
+            raise ValueError("環境変数にSlackチャンネルIDを設定してください")
+        if self.slack_channel == "":
             raise ValueError("環境変数にSlackチャンネルIDを設定してください")
     
     def _render_prompt(self) -> str:

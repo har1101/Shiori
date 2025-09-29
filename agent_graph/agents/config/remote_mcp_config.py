@@ -19,7 +19,7 @@ logging.getLogger().addFilter(SuppressSSEConnectionFilter())
 log = logging.getLogger("mcp_config")
 
 
-class MCPConfig:
+class RemoteMCPConfig:
     """
     AgentCore Identity に保存した API Key を取得し、
     引数の与え方でトランスポートを自動選択して MCPClient を返す。
@@ -48,7 +48,7 @@ class MCPConfig:
 
     def __init__(
         self,
-        provider_name: Optional[str],
+        provider_name: str,
         base_url: str,
         http_path_template: Optional[str] = None,
         sse_path_template: Optional[str] = None,

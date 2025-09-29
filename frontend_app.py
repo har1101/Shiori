@@ -320,7 +320,7 @@ def render_sidebar():
             **M2M (Machine-to-Machine) 認証**
             - AgentCore IdentityがWorkload Access Tokenを取得
             - Runtime User IDで認証ユーザーを識別
-            - デフォルトは `m2m-user-001`
+            - デフォルトは `agent_graph`
             """)
         
         # AWS設定
@@ -354,13 +354,14 @@ def render_chat_interface():
     """チャットインターフェースを表示"""
     
     # メインコンテンツエリア
-    st.title("🤖 Strands Agent Graph")
+    st.title("Shiori - record your output history")
     st.markdown("""
-    **SlackとTavilyを連携したマルチエージェントシステム**
+    **Slack MCP, Firecrawl MCP, Aurora DSQL MCPを連携したマルチエージェントシステム**
     
     このアプリは以下の処理を自動実行します：
-    1. SlackAgentが「test-strands-agents」チャンネルからURLを取得
-    2. TavilyAgentがURLの内容を抽出・要約
+    1. SlackAgentが任意のチャンネルからURLを取得
+    2. FirecrawlAgentがURLの内容を抽出・要約
+    3. Aurora DSQLへデータを格納
     """)
     
     # 設定チェック
@@ -421,7 +422,7 @@ def render_chat_interface():
                         agentRuntimeArn=os.getenv("AGENT_RUNTIME_ARN"),
                         runtimeSessionId=st.session_state.session_id,
                         payload=payload,
-                        qualifier="endpoint_ver10",
+                        qualifier="DEFAULT",
                         runtimeUserId=runtime_user_id  # ユーザーIDをヘッダーに設定
                     )
                     

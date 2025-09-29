@@ -37,4 +37,4 @@ COPY . .
 
 # Use the full module path
 
-CMD ["opentelemetry-instrument", "python", "-m", "agent_graph_v2"]
+CMD ["python", "-m", "shiori_agent_graph"]

@@ -1,4 +1,3 @@
-from strands import Agent
 from strands.tools.mcp import MCPClient
 from strands.multiagent.graph import GraphState
 from typing import Any, Dict
@@ -14,7 +13,7 @@ from mcp.client.streamable_http import streamablehttp_client
 from bedrock_agentcore.identity.auth import requires_access_token
 
 logger = logging.getLogger("agent_graph")
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 logging.basicConfig(
     format="%(levelname)s | %(name)s | %(message)s",
     handlers=[logging.StreamHandler()]
@@ -109,9 +108,9 @@ class GatewayIdentityConfig:
     """
 
     def __init__(self):
-        self.gateway_url = os.environ.get("GATEWAY_URL", "https://slack-gateway-uzumouvte3.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp")
-        self.provider_name = os.environ.get("PROVIDER_NAME", "agentcore-identity-for-gateway")
-        self.cognito_scope = os.environ.get("COGNITO_SCOPE", "slack-gateway/genesis-gateway:invoke")
+        self.gateway_url = os.environ.get("GATEWAY_URL", "")
+        self.provider_name = os.environ.get("PROVIDER_NAME", "")
+        self.cognito_scope = os.environ.get("COGNITO_SCOPE", "")
         self.workload_name = os.environ.get("WORKLOAD_NAME", "agent_graph")
         self.user_id = os.environ.get("USER_ID", "agent_graph")
         self.region = region
@@ -119,9 +118,15 @@ class GatewayIdentityConfig:
         # 環境変数の検証
         if not self.gateway_url:
             raise ValueError("GATEWAY_URL環境変数が必要です")
+        if self.gateway_url == "":
+            raise ValueError("GATEWAY_URL環境変数が必要です")
         if not self.provider_name:
             raise ValueError("PROVIDER_NAME環境変数が必要です")
+        if self.provider_name == "":
+            raise ValueError("PROVIDER_NAME環境変数が必要です")
         if not self.cognito_scope:
+            raise ValueError("COGNITO_SCOPE環境変数が必要です")
+        if self.cognito_scope == "":
             raise ValueError("COGNITO_SCOPE環境変数が必要です")
 
         logger.info(f"Gateway URL: {self.gateway_url}")
